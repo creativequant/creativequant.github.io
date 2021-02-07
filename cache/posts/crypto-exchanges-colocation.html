@@ -1,0 +1,1165 @@
+<p>I wanted to deploy a cloud instance in order to perform High Frequency Trading wiht low latency toward a couple of cryptocurrency exchanges.
+First of all I needed a list of exchanges, so I leveraged an open source library which allows an unified API toward those exchanges.
+It definitively have a list of endpoits.</p>
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapseNone">Show Me The Code</button>
+<div id="code_collapseNone" class="collapse"><pre><code>import pandas as pd
+import ccxt
+from importlib import import_module
+
+ccxt_modules = [mod for mod in dir(ccxt) if mod[0].islower() and mod not in 
+                ['base','decimal_to_precision','error_hierarchy',
+                 'errors','exchanges','static_dependencies']]
+rows = []
+for mod in ccxt_modules:
+    full_module_name = "ccxt." + mod
+
+    imp_module = import_module(full_module_name)
+    describe = getattr(imp_module, mod)().describe()
+    api_elem = describe['urls']['api']
+    if isinstance(api_elem, str):
+        api_url = api_elem
+    else:
+        assert isinstance(api_elem, dict)
+        if 'private' in api_elem.keys():
+            api_url = api_elem['private']
+        elif 'v3Private' in api_elem.keys():
+            api_url = api_elem['v3Private']
+        elif 'trade' in api_elem.keys():
+            api_url = api_elem['trade']
+        elif 'api' in api_elem.keys():
+            api_url = api_elem['api']
+        elif 'public' in api_elem.keys():
+            api_url = api_elem['public']
+        elif 'rest' in api_elem.keys():
+            api_url = api_elem['rest']
+        elif 'publicV2' in api_elem.keys():
+            api_url = api_elem['publicV2']
+        elif 'current' in api_elem.keys():
+            api_url = api_elem['current']
+        elif len(api_elem) == 1:
+            api_url = api_elem[api_elem.keys()[0]]
+        else:
+            print("Unexpected json structure")
+    if 'hostname' in api_url:
+        api_url = api_url.format(hostname=describe['hostname'])
+
+    rows.append([describe['id'], api_url])
+
+exchanges_df = pd.DataFrame(rows, columns=['name','api_url']).set_index('name')
+exchanges_df</code></pre></div>
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse2">Show Me The Code</button>
+<div id="code_collapse2" class="collapse"><pre><code>from urllib.parse import urlparse
+import socket
+
+def extract_domain(url):
+    domain = urlparse(url).hostname
+    return domain
+
+def get_ip(domain):
+    try:
+        return socket.gethostbyname(domain)
+    except Exception as e:
+        # print(domain)
+        # print(e)
+        pass
+
+exchanges_df['api_url_domain'] = exchanges_df.api_url.dropna().apply(extract_domain)
+exchanges_df['api_ip'] = exchanges_df['api_url_domain'].dropna().apply(get_ip)
+exchanges_df</code></pre></div>
+
+
+
+
+    
+
+
+<div>
+ <table border="1" class="dataframe">
+  <thead>
+   <tr style="text-align: right;">
+    <th>
+    </th>
+    <th>
+     api_url
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     api_ip
+    </th>
+   </tr>
+   <tr>
+    <th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <th>
+     aax
+    </th>
+    <td>
+     https://api.aax.com
+    </td>
+    <td>
+     api.aax.com
+    </td>
+    <td>
+     52.220.66.226
+    </td>
+   </tr>
+   <tr>
+    <th>
+     acx
+    </th>
+    <td>
+     https://acx.io/api
+    </td>
+    <td>
+     acx.io
+    </td>
+    <td>
+     3.106.77.227
+    </td>
+   </tr>
+   <tr>
+    <th>
+     aofex
+    </th>
+    <td>
+     https://openapi.aofex.com/openApi
+    </td>
+    <td>
+     openapi.aofex.com
+    </td>
+    <td>
+     104.20.161.135
+    </td>
+   </tr>
+   <tr>
+    <th>
+     bequant
+    </th>
+    <td>
+     https://api.bequant.io
+    </td>
+    <td>
+     api.bequant.io
+    </td>
+    <td>
+     172.67.74.135
+    </td>
+   </tr>
+   <tr>
+    <th>
+     bibox
+    </th>
+    <td>
+     https://api.bibox365.com
+    </td>
+    <td>
+     api.bibox365.com
+    </td>
+    <td>
+     104.26.13.161
+    </td>
+   </tr>
+   <tr>
+    <th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+   </tr>
+   <tr>
+    <th>
+     xbtce
+    </th>
+    <td>
+     https://cryptottlivewebapi.xbtce.net:8443/api
+    </td>
+    <td>
+     cryptottlivewebapi.xbtce.net
+    </td>
+    <td>
+     195.154.26.204
+    </td>
+   </tr>
+   <tr>
+    <th>
+     xena
+    </th>
+    <td>
+     https://api.xena.exchange
+    </td>
+    <td>
+     api.xena.exchange
+    </td>
+    <td>
+     104.22.73.120
+    </td>
+   </tr>
+   <tr>
+    <th>
+     yobit
+    </th>
+    <td>
+     https://yobit.net/tapi
+    </td>
+    <td>
+     yobit.net
+    </td>
+    <td>
+     104.16.241.98
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zaif
+    </th>
+    <td>
+     https://api.zaif.jp
+    </td>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     13.112.252.96
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zb
+    </th>
+    <td>
+     https://trade.zb.cn/api
+    </td>
+    <td>
+     trade.zb.cn
+    </td>
+    <td>
+     47.244.159.168
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  124 rows × 3 columns
+ </p>
+</div>
+
+
+
+
+									<hr class="major" /><p>Then I used a tool for grouping togheter ip addresses in Autonomous Systems. 
+In order to do that I downloaded MRT/RIB BGP archives from Routeviews (or similar sources).
+<a href="https://github.com/hadiasghari/pyasn">link</a></p>
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse3">Show Me The Code</button>
+<div id="code_collapse3" class="collapse"><pre><code>import pyasn
+
+asndb = pyasn.pyasn('../data/ipasn.20201106.dat')
+
+def _get_asn(ip):
+    return asndb.lookup(ip)[1] or ip
+
+
+exchanges_df['api_asn'] = exchanges_df['api_ip'].dropna().apply(_get_asn)
+exchanges_df</code></pre></div>
+
+
+
+
+    
+
+
+<div>
+ <table border="1" class="dataframe">
+  <thead>
+   <tr style="text-align: right;">
+    <th>
+    </th>
+    <th>
+     api_url
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     api_ip
+    </th>
+    <th>
+     api_asn
+    </th>
+   </tr>
+   <tr>
+    <th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <th>
+     aax
+    </th>
+    <td>
+     https://api.aax.com
+    </td>
+    <td>
+     api.aax.com
+    </td>
+    <td>
+     52.220.66.226
+    </td>
+    <td>
+     52.220.0.0/15
+    </td>
+   </tr>
+   <tr>
+    <th>
+     acx
+    </th>
+    <td>
+     https://acx.io/api
+    </td>
+    <td>
+     acx.io
+    </td>
+    <td>
+     3.106.77.227
+    </td>
+    <td>
+     3.104.0.0/14
+    </td>
+   </tr>
+   <tr>
+    <th>
+     aofex
+    </th>
+    <td>
+     https://openapi.aofex.com/openApi
+    </td>
+    <td>
+     openapi.aofex.com
+    </td>
+    <td>
+     104.20.161.135
+    </td>
+    <td>
+     104.20.160.0/20
+    </td>
+   </tr>
+   <tr>
+    <th>
+     bequant
+    </th>
+    <td>
+     https://api.bequant.io
+    </td>
+    <td>
+     api.bequant.io
+    </td>
+    <td>
+     172.67.74.135
+    </td>
+    <td>
+     172.67.64.0/20
+    </td>
+   </tr>
+   <tr>
+    <th>
+     bibox
+    </th>
+    <td>
+     https://api.bibox365.com
+    </td>
+    <td>
+     api.bibox365.com
+    </td>
+    <td>
+     104.26.13.161
+    </td>
+    <td>
+     104.26.0.0/20
+    </td>
+   </tr>
+   <tr>
+    <th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+   </tr>
+   <tr>
+    <th>
+     xbtce
+    </th>
+    <td>
+     https://cryptottlivewebapi.xbtce.net:8443/api
+    </td>
+    <td>
+     cryptottlivewebapi.xbtce.net
+    </td>
+    <td>
+     195.154.26.204
+    </td>
+    <td>
+     195.154.0.0/16
+    </td>
+   </tr>
+   <tr>
+    <th>
+     xena
+    </th>
+    <td>
+     https://api.xena.exchange
+    </td>
+    <td>
+     api.xena.exchange
+    </td>
+    <td>
+     104.22.73.120
+    </td>
+    <td>
+     104.22.64.0/20
+    </td>
+   </tr>
+   <tr>
+    <th>
+     yobit
+    </th>
+    <td>
+     https://yobit.net/tapi
+    </td>
+    <td>
+     yobit.net
+    </td>
+    <td>
+     104.16.241.98
+    </td>
+    <td>
+     104.16.240.0/20
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zaif
+    </th>
+    <td>
+     https://api.zaif.jp
+    </td>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     13.112.252.96
+    </td>
+    <td>
+     13.112.0.0/14
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zb
+    </th>
+    <td>
+     https://trade.zb.cn/api
+    </td>
+    <td>
+     trade.zb.cn
+    </td>
+    <td>
+     47.244.159.168
+    </td>
+    <td>
+     47.244.128.0/17
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  124 rows × 4 columns
+ </p>
+</div>
+
+
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse4">Show Me The Code</button>
+<div id="code_collapse4" class="collapse"><pre><code>import requests
+
+url = 'https://ip-ranges.amazonaws.com/ip-ranges.json'
+req = requests.get(url)
+
+import pandas as pd
+
+aws_ip_ranges_df = pd.DataFrame(req.json()['prefixes'],  
+                                columns=['ip_prefix', 'region', 'service', 'network_border_group'])
+aws_ip_ranges_df.set_index('ip_prefix', inplace=True)
+aws_ip_ranges_df</code></pre></div>
+
+
+
+
+    
+
+
+<div>
+ <table border="1" class="dataframe">
+  <thead>
+   <tr style="text-align: right;">
+    <th>
+    </th>
+    <th>
+     region
+    </th>
+    <th>
+     service
+    </th>
+    <th>
+     network_border_group
+    </th>
+   </tr>
+   <tr>
+    <th>
+     ip_prefix
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <th>
+     3.5.140.0/22
+    </th>
+    <td>
+     ap-northeast-2
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     ap-northeast-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     35.180.0.0/16
+    </th>
+    <td>
+     eu-west-3
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     eu-west-3
+    </td>
+   </tr>
+   <tr>
+    <th>
+     52.93.178.234/32
+    </th>
+    <td>
+     us-west-1
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     us-west-1
+    </td>
+   </tr>
+   <tr>
+    <th>
+     52.94.76.0/22
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     52.95.36.0/22
+    </th>
+    <td>
+     ap-southeast-2
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+   </tr>
+   <tr>
+    <th>
+     44.242.161.8/31
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     KINESIS_VIDEO_STREAMS
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     44.242.184.128/25
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     52.43.76.88/29
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     CODEBUILD
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     54.190.198.32/28
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     AMAZON_CONNECT
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     54.244.46.0/23
+    </th>
+    <td>
+     us-west-2
+    </td>
+    <td>
+     WORKSPACES_GATEWAYS
+    </td>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  3804 rows × 3 columns
+ </p>
+</div>
+
+
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse5">Show Me The Code</button>
+<div id="code_collapse5" class="collapse"><pre><code>exchanges_df = exchanges_df.merge(aws_ip_ranges_df, how='left', left_on='api_asn', right_index=True)
+exchanges_df</code></pre></div>
+
+
+
+
+    
+
+
+<div>
+ <table border="1" class="dataframe">
+  <thead>
+   <tr style="text-align: right;">
+    <th>
+    </th>
+    <th>
+     api_url
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     api_ip
+    </th>
+    <th>
+     api_asn
+    </th>
+    <th>
+     region
+    </th>
+    <th>
+     service
+    </th>
+    <th>
+     network_border_group
+    </th>
+   </tr>
+   <tr>
+    <th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <th>
+     aax
+    </th>
+    <td>
+     https://api.aax.com
+    </td>
+    <td>
+     api.aax.com
+    </td>
+    <td>
+     52.220.66.226
+    </td>
+    <td>
+     52.220.0.0/15
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+   </tr>
+   <tr>
+    <th>
+     aax
+    </th>
+    <td>
+     https://api.aax.com
+    </td>
+    <td>
+     api.aax.com
+    </td>
+    <td>
+     52.220.66.226
+    </td>
+    <td>
+     52.220.0.0/15
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+    <td>
+     EC2
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+   </tr>
+   <tr>
+    <th>
+     acx
+    </th>
+    <td>
+     https://acx.io/api
+    </td>
+    <td>
+     acx.io
+    </td>
+    <td>
+     3.106.77.227
+    </td>
+    <td>
+     3.104.0.0/14
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     acx
+    </th>
+    <td>
+     https://acx.io/api
+    </td>
+    <td>
+     acx.io
+    </td>
+    <td>
+     3.106.77.227
+    </td>
+    <td>
+     3.104.0.0/14
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+    <td>
+     EC2
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+   </tr>
+   <tr>
+    <th>
+     aofex
+    </th>
+    <td>
+     https://openapi.aofex.com/openApi
+    </td>
+    <td>
+     openapi.aofex.com
+    </td>
+    <td>
+     104.20.161.135
+    </td>
+    <td>
+     104.20.160.0/20
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+   </tr>
+   <tr>
+    <th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+    <td>
+     ...
+    </td>
+   </tr>
+   <tr>
+    <th>
+     xena
+    </th>
+    <td>
+     https://api.xena.exchange
+    </td>
+    <td>
+     api.xena.exchange
+    </td>
+    <td>
+     104.22.73.120
+    </td>
+    <td>
+     104.22.64.0/20
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+   </tr>
+   <tr>
+    <th>
+     yobit
+    </th>
+    <td>
+     https://yobit.net/tapi
+    </td>
+    <td>
+     yobit.net
+    </td>
+    <td>
+     104.16.241.98
+    </td>
+    <td>
+     104.16.240.0/20
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zaif
+    </th>
+    <td>
+     https://api.zaif.jp
+    </td>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     13.112.252.96
+    </td>
+    <td>
+     13.112.0.0/14
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+    <td>
+     AMAZON
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zaif
+    </th>
+    <td>
+     https://api.zaif.jp
+    </td>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     13.112.252.96
+    </td>
+    <td>
+     13.112.0.0/14
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+    <td>
+     EC2
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+   </tr>
+   <tr>
+    <th>
+     zb
+    </th>
+    <td>
+     https://trade.zb.cn/api
+    </td>
+    <td>
+     trade.zb.cn
+    </td>
+    <td>
+     47.244.159.168
+    </td>
+    <td>
+     47.244.128.0/17
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+    <td>
+     NaN
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <p>
+  140 rows × 7 columns
+ </p>
+</div>
+
+
+
+
+									<hr class="major" />
+
+<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse67">Show Me The Code</button>
+<div id="code_collapse67" class="collapse"><pre><code>exchanges_df.groupby(['region']).count()[['api_url']]\
+    .rename(mapper=dict(api_url='count'), axis=1)\
+    .sort_values('count', ascending=False).index.values</code></pre></div>
+
+
+
+
+    
+
+
+
+<pre>array([&#39;ap-northeast-1&#39;, &#39;eu-west-1&#39;, &#39;ap-northeast-2&#39;, &#39;ap-southeast-1&#39;,
+       &#39;us-east-1&#39;, &#39;ap-southeast-2&#39;, &#39;eu-central-1&#39;], dtype=object)</pre>
+
+
+
+
+									<hr class="major" />
+
+
+<!-- Load mathjax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML-full,Safe"> </script>
+    <!-- MathJax configuration -->
+    <script type="text/x-mathjax-config">
+    init_mathjax = function() {
+        if (window.MathJax) {
+        // MathJax loaded
+            MathJax.Hub.Config({
+                TeX: {
+                    equationNumbers: {
+                    autoNumber: "AMS",
+                    useLabelIds: true
+                    }
+                },
+                tex2jax: {
+                    inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                displayAlign: 'center',
+                CommonHTML: {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                },
+                "HTML-CSS": {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                }
+            });
+        
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+    }
+    init_mathjax();
+    </script>
+    <!-- End of mathjax configuration -->

@@ -1,0 +1,66 @@
+{#  -*- coding: utf-8 -*- #}
+{% import 'base_helper.tmpl' as base with context %}
+{% import 'base_header.tmpl' as header with context %}
+{% import 'base_footer.tmpl' as footer with context %}
+{{ set_locale(lang) }}
+{#  <html> tag is included by base.html_headstart #}
+{{ base.html_headstart() }}
+{% block extra_head %}
+{#  Leave this block alone. #}
+{% endblock %}
+{{ template_hooks['extra_head']() }}
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+						{{ header.html_header() }}
+						<!-- Content -->
+						<section>
+						{% block content %}{% endblock %}
+						</section>
+							{{ footer.html_footer() }}
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar" class="inactive">
+						<div class="inner">
+
+							<!-- Menu -->
+							{{ base.html_navigation_links() }}
+						</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+
+			{{ base.late_load_js() }}
+			{% if date_fanciness != 0 %}
+			<!-- fancy dates -->
+			<script>
+			luxon.Settings.defaultLocale = "{{ luxon_locales[lang] }}";
+			fancydates({{ date_fanciness }}, {{ luxon_date_format }});
+			</script>
+			<!-- end fancy dates -->
+			{% endif %}
+			{% block extra_js %}{% endblock %}
+			<script>
+			baguetteBox.run('div#content', {
+				ignoreClass: 'islink',
+				captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+			</script>
+			{{ body_end }}
+			{{ template_hooks['body_end']() }}
+			</body>
+</html>
+

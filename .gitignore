@@ -1,3 +1,4 @@
-./editorial-theme
 .idea/
+data/
+__pycache__/
 

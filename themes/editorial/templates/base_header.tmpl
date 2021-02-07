@@ -1,0 +1,37 @@
+{#  -*- coding: utf-8 -*- #}
+{% import 'base_helper.tmpl' as base with context %}
+
+{% macro html_header() %}
+            <!-- Header -->
+                <header id="header">
+                    <strong>{{ blog_title|e }}</strong>
+                    <ul class="icons">
+                        <li><a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fcreativequant.dev&title=&summary=&source=http%3A%2F%2Fcreativequant.dev" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+                        <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fcreativequant.dev&text=%20https%3A%2F%2Fcreativequant.dev" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcreativequant.dev&quote=" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                    </ul>
+
+                    {% if search_form %}
+                        <!-- Search -->
+                        <section id="search" class="alt">
+                            <form method="post" action="#">
+                                <input type="text" name="query" id="query" placeholder="Search">
+                            </form>
+                        </section>
+                    {% endif %}
+                    {{ html_translation_header() }}
+
+                    {{ template_hooks['page_header']() }}
+                </header>
+{% endmacro %}
+
+
+
+{% macro html_translation_header() %}
+    {% if translations|length > 1 %}
+        <div id="toptranslations">
+            <h2>{{ messages("Languages:") }}</h2>
+            {{ base.html_translations() }}
+        </div>
+    {% endif %}
+{% endmacro %}
