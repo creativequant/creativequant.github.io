@@ -29,7 +29,7 @@
 
 {% block input %}
 <button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse{{cell.execution_count}}">Show Me The Code</button>
-<div id="code_collapse{{cell.execution_count}}" class="collapse"><pre><code>{{ cell.source }}</code></pre></div>
+<div id="code_collapse{{cell.execution_count}}" class="collapse"><pre><code>{{ cell.source | highlight_code(metadata=cell.metadata)}}</code></pre></div>
 {%- endblock input %}
 
 {% block output_area_prompt %}{% endblock output_area_prompt %}

@@ -6,7 +6,7 @@
         "preprocessors": {
         "100-pygments": {
             "type": "nbconvert.preprocessors.CSSHTMLHeaderPreprocessor",
-            "enabled": false,
+            "enabled": true,
             "style": "default"
         }
     }
