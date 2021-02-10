@@ -24,25 +24,24 @@
 {% if page_links %}
     {{ pagination.page_navigation(current_page, page_links, prevlink, nextlink, prev_next_links_reversed) }}
 {% endif %}
-							<!-- Content -->
-                            <div class="postindex">
-								<section>
-                                <!-- Content -->
-                                    <!-- h2 id="content">Creative Quant</h2-->
-                                    <div class="row">
-                                        {% for post in posts %}
-                                        <div class="col-6 col-12-small">
-                                            <article class="h-entry post-{{ post.meta('type') }}" itemscope="itemscope" itemtype="http://schema.org/Article">
-                                                <h3 class="p-name entry-title"><a href="{{ post.permalink() }}" class="u-url">{{ post.title()|e }}</a></h3>
-                                                    <div class="p-summary entry-summary"><blockquote>{{ post.description() }}
-													...<br>Reading time: {{post.reading_time}} minutes</blockquote></div>
-                                            </article>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </section>
 
-</div>
+
+<!-- Content -->
+<section style="max-width: 100%;">
+  <header class="major">
+    <h2>Articles:</h2>
+  </header>
+  <div class="posts">
+        {% for post in posts %}
+        <article class="h-entry post-{{ post.meta('type') }}" itemscope="itemscope" itemtype="http://schema.org/Article">
+          <a href="{{ post.permalink() }}" class="image"><img src="{{ post.previewimage }}" alt="{{ post.description() }}" /></a>
+          <h3 class="p-name entry-title"><a href="{{ post.permalink() }}" class="u-url">{{ post.title()|e }}</a></h3>
+          <p class="p-summary entry-summary">{{ post.description() }}</p>
+          <h5>{{post.reading_time}} min read</h5>
+        </article>
+        {% endfor %}
+  </div>
+</section>
 {{ helper.html_pager() }}
 {{ comments.comment_link_script() }}
 {{ math.math_scripts_ifposts(posts) }}

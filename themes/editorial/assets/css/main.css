@@ -119,7 +119,6 @@ a {
   -webkit-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
   -ms-transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
   transition: color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
-  border-bottom: dotted 1px;
   color: #f56a6a;
   text-decoration: none; }
   a:hover {
@@ -205,27 +204,38 @@ code {
   border-radius: 0.375em;
   border: solid 1px rgba(210, 215, 217, 0.75);
   font-family: "Courier New", monospace;
-  font-size: 0.9em;
+  font-size: 0.8em;
   margin: 0 0.25em;
-  padding: 0.25em 0.65em; }
+  padding: 0.25em 0.65em;
+  }
 
 pre {
   -webkit-overflow-scrolling: touch;
   font-family: "Courier New", monospace;
-  font-size: 0.9em;
-  margin: 0 0 2em 0; }
-  pre code {
+  font-size: 0.8em;
+  margin: 0 0 2em 0;
+    }
+
+pre code {
     display: block;
     line-height: 1.75;
-    padding: 1em 1.5em;
-    overflow-x: auto; }
+    padding: 1em 1em;
+    overflow-x: auto;
+}
+
+.data_text{
+    font-size: 0.7em;
+}
+
+.data_html > div > p{
+    font-size: 0.7em;
+}
 
 hr {
   border: 0;
   border-bottom: solid 1px rgba(210, 215, 217, 0.75);
-  margin: 2em 0; }
-  hr.major {
-    margin: 3em 0; }
+  }
+  hr.major {}
 
 .align-left {
   text-align: left; }
@@ -1884,7 +1894,6 @@ button,
         padding: 6em 0 4em 0 ;
         border-top: solid 2px rgba(210, 215, 217, 0.75);
         max-width: 680px;
-        width: 50%;
         margin: 0 auto;
       }
       #main > .inner > section:first-of-type {
@@ -2224,9 +2233,13 @@ button,
 /* Footer */
 #footer .copyright {
   color: #9fa3a6;
-  font-size: 0.9em; }
+  font-size: 0.4em; }
   #footer .copyright a {
     color: inherit; }
+
+section > article > aside {
+    font-size: 14px;
+}
 
 /* Menu */
 #menu ul {

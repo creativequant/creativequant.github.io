@@ -25,9 +25,7 @@
 						<div class="inner">
 						{{ header.html_header() }}
 						<!-- Content -->
-						<section>
 						{% block content %}{% endblock %}
-						</section>
 							{{ footer.html_footer() }}
 						</div>
 					</div>
@@ -37,7 +35,23 @@
 						<div class="inner">
 
 							<!-- Menu -->
-							{{ base.html_navigation_links() }}
+							<nav id="menu">
+								<header class="major">
+								<h2>Menu</h2>
+								</header>
+							<ul>
+							<li><a href="/">Homepage</a></li>
+							{% block navigation_links %}
+								{{ base.html_navigation_links() }}
+							{% endblock %}
+								</ul>
+							</nav>
+
+							{% if content_footer %}
+								<footer id="footer">
+									<p class="copyright">{{ content_footer }}{{ template_hooks['page_footer']() }}</p>
+								</footer>
+							{% endif %}
 						</div>
 					</div>
 			</div>

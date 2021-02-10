@@ -1,9 +1,4 @@
 {#  -*- coding: utf-8 -*- #}
 
 {% macro html_footer() %}
-    {% if content_footer %}
-        <footer id="footer">
-            <p class="copyright">{{ content_footer }}{{ template_hooks['page_footer']() }}</p>
-        </footer>
-    {% endif %}
 {% endmacro %}

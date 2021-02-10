@@ -28,8 +28,18 @@
 {% endblock output_prompt %}
 
 {% block input %}
-<button type="button"  class="button primary small" data-toggle="collapse" data-target="#code_collapse{{cell.execution_count}}">Show Me The Code</button>
-<div id="code_collapse{{cell.execution_count}}" class="collapse"><pre><code>{{ cell.source | highlight_code(metadata=cell.metadata)}}</code></pre></div>
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse{{cell.execution_count}}"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse{{cell.execution_count}}" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code>{{ cell.source | highlight_code(metadata=cell.metadata)}}</code></pre>
+        </div>
+    </div>
+</div>
 {%- endblock input %}
 
 {% block output_area_prompt %}{% endblock output_area_prompt %}
@@ -61,13 +71,13 @@ unknown type  {{ cell.type }}
 {%- endblock execute_result %}
 
 {% block stream_stdout -%}
-<pre>
+<pre class="stream_stdout">
 {{- output.text | ansi2html -}}
 </pre>
 {%- endblock stream_stdout %}
 
 {% block stream_stderr -%}
-<pre>
+<pre class="stream_stderr">
 {{- output.text | ansi2html -}}
 </pre>
 {%- endblock stream_stderr %}
@@ -80,7 +90,11 @@ unknown type  {{ cell.type }}
 {%- endif %}
 {%- endblock data_svg %}
 
-{% block data_html scoped -%}{{ output.data['text/html'] | stripcssstyle}}{%- endblock data_html %}
+{% block data_html scoped -%}
+<div class="data_html">
+{{ output.data['text/html'] | stripcssstyle}}
+</div>
+{%- endblock data_html %}
 
 {% block data_markdown scoped -%}
 {{ output.data['text/markdown'] | markdown2html }}
@@ -139,7 +153,7 @@ alt="{{ alttext }}"
 {%- endblock data_latex %}
 
 {% block error -%}
-<pre>
+<pre class="block_error">
 {{- super() -}}
 </pre>
 {%- endblock error %}
@@ -149,7 +163,7 @@ alt="{{ alttext }}"
 {%- endblock traceback_line %}
 
 {%- block data_text scoped %}
-<pre>
+<pre class="data_text">
 {{- output.data['text/plain'] | ansi2html -}}
 </pre>
 {%- endblock -%}
@@ -204,6 +218,5 @@ var element = $('#{{ div_id }}');
 
 {%- block any_cell scoped -%}
 {{ super() }}
-
-									<hr class="major" />
+<hr class="major" />
 {%- endblock any_cell -%}

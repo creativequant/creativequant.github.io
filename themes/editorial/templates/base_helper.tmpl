@@ -81,6 +81,21 @@ lang="{{ lang }}">
             <script src="/assets/js/util.js"></script>
             <script src="/assets/js/main.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+            <script>
+            $(document).ready(function(){
+                // Add minus icon for collapse element which is open by default
+                $(".collapse.show").each(function(){
+                    $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+                });
+
+                // Toggle plus minus icon on show hide of collapse element
+                $(".collapse").on('show.bs.collapse', function(){
+                    $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+                }).on('hide.bs.collapse', function(){
+                    $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+                });
+            });
+        </script>
         {% endif %}
     {% endif %}
     {% if date_fanciness != 0 %}
@@ -142,24 +157,18 @@ lang="{{ lang }}">
 {% endmacro %}
 
 {% macro html_navigation_links() %}
-                                                    <nav id="menu">
-                                                        <header class="major">
-                                                        <h2>Menu</h2>
-                                                        </header>
-                                                    <ul>
-                                                    <li><a href="/">Homepage</a></li>
-    {{ html_navigation_links_entries(navigation_links) }}
-    {{ html_navigation_links_entries(navigation_alt_links) }}
-    {{ template_hooks['menu']() }}
-    {{ template_hooks['menu_alt']() }}
-                                                        <li><span class="opener">Posts</span>
-                                                        <ul>{% for post in posts %}
-                                                            <li><a href="{{ post.permalink() }}" class="u-url">{{ post.title()|e }}</a></li>
-                                                            {% endfor %}
-                                                        </ul>
-                                                    </li>
-                                                    </ul>
-                                                    </nav>
+
+{{ html_navigation_links_entries(navigation_links) }}
+{{ html_navigation_links_entries(navigation_alt_links) }}
+{{ template_hooks['menu']() }}
+{{ template_hooks['menu_alt']() }}
+    <li><span class="opener">Posts</span>
+        <ul>{% for post in posts %}
+            <li><a href="{{ post.permalink() }}" class="u-url">{{ post.title()|e }}</a></li>
+            {% endfor %}
+        </ul>
+    </li>
+
 {% endmacro %}
 
 {% macro html_navigation_links_entries(navigation_links_source) %}
