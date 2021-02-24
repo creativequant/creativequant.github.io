@@ -155,3 +155,4 @@
 'render_sources:output/posts/where-are-crypto-markets-colocated/index.src.html', (290816, 298)
 'render_posts:cache/posts/where-are-crypto-markets-colocated.html', (299520, 598)
 'render_pages:output/posts/where-are-crypto-markets-colocated/index.html', (304128, 5372)
+'copy_files:output/CNAME', (309760, 228)
