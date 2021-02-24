@@ -1,4 +1,4 @@
 .. title: Where are crypto markets colocated?
 .. date: 2021-02-22 19:52:05 UTC
-.. description: I used this code for identifying five groups of colocated crypto markets. Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.
+.. description: I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.
 .. previewimage: /images/servers.png
