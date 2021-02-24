@@ -8,3 +8,6 @@ build: notebooks ## build the website
 
 serve: ## serve the website
 	nikola serve -b
+
+deploy: ## deploy the website
+	nikola github_deploy
