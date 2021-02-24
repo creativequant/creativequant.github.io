@@ -1,0 +1,4 @@
+.. title: Where are crypto markets colocated?
+.. date: 2021-02-22 19:52:05 UTC
+.. description: I used this code for identifying five groups of colocated crypto markets. Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.
+.. previewimage: /images/servers.png

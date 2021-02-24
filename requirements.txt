@@ -1,0 +1,2 @@
+nikola=8.1.2=pypi_0
+nbconvert==6.0.7
