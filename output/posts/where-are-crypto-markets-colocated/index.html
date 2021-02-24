@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html prefix="
+        og: http://ogp.me/ns# article: http://ogp.me/ns/article#
+    " vocab="http://ogp.me/ns" lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="I used this code for identifying five groups of colocated crypto markets. Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Where are crypto markets colocated? | Creative Quant</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/baguetteBox.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/main.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/fontawesome-all.min.css" rel="stylesheet" type="text/css">
+<link href="../../assets/css/colorful.css" rel="stylesheet" type="text/css">
+<meta name="theme-color" content="#f56a6a">
+<meta name="generator" content="Nikola (getnikola.com)">
+<link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
+<link rel="canonical" href="https://creativequant.dev/posts/where-are-crypto-markets-colocated/">
+<!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="creativequant.dev">
+<meta property="og:site_name" content="Creative Quant">
+<meta property="og:title" content="Where are crypto markets colocated?">
+<meta property="og:url" content="https://creativequant.dev/posts/where-are-crypto-markets-colocated/">
+<meta property="og:description" content="I used this code for identifying five groups of colocated crypto markets. Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.">
+<meta property="og:image" content="https://creativequant.dev/images/servers.png">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2021-02-22T19:52:05Z">
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+</head>
+<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+						            <!-- Header -->
+                <header id="header"><a href="../../"><strong>Creative Quant</strong></a>
+                    <ul class="icons">
+<li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fcreativequant.dev&amp;title=&amp;summary=&amp;source=http%3A%2F%2Fcreativequant.dev" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
+                        <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fcreativequant.dev&amp;text=%20https%3A%2F%2Fcreativequant.dev" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+                        <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcreativequant.dev&amp;quote=" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+                    </ul></header><!-- Content --><section><a href="."><h2>Where are crypto markets colocated?</h2></a>
+    <a href="." class="image"><img src="../../images/servers.png" alt="I used this code for identifying five groups of colocated crypto markets. Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges." style="width: 100%;"></a>
+    <h6>7 min read</h6>
+    <article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><div class="e-content entry-content" itemprop="articleBody text">
+        <p>I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.</p>
+<p>Cryptocurrency markets are privately owned web platforms that allow users to exchange different cryptos using APIs to get and place orders. Usual cryptocurrency flow starts from the user's private wallet to a wallet owned by the market. After the market verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the exchanges done are off-chain transactions, which means they don't leverage any blockchain at all.
+They are not blockchain-based since the market holds a private database taking note of its users' amounts. In other words, the market database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.
+A blockchain is a distributed ledger used for storing the transactions that change the amounts owned by each wallet, which we call on-chain transactions.</p>
+<p>This constellation of privately-held centralized ledgers is not the only way to exchange cryptocurrencies: recent developments were using Distributed Finance (DeFi), but maybe I will talk about that in another post.</p>
+<p>There are main differences between cryptocurrency markets and well-established stock exchanges such as Nasdaq or Euronext:</p>
+<ul>
+<li>
+<p>Absent regulation:
+Those places are the heaven for neoliberalists: the only fees on transactions are the only ones enforced by platform owners.</p>
+</li>
+<li>
+<p>Security threats:
+It's frequent to see those platforms as victims of cybercriminals, which often aim to their debts database and private wallets. The amount of risk in having a firm trading crypto assets is higher than classical finance.</p>
+</li>
+<li>
+<p>Higher volatility:
+Compared with established classical stocks, cryptocurrencies have a bigger chance to change their value. Any crypto trading firm should face the reality that all the assets they invested in can suddenly change in value. To mitigate this phenomenon, a cryptocurrency finance firm introduced a coin designed to have the same value of US dollars: USD Coin.</p>
+</li>
+</ul>
+<p>One type of financial activity is Risk-Free arbitrage, in its simplest form is the strategy of buying an asset and resell it at a higher price. Trading firms leverage ad-hoc infrastructure to have low latency toward exchange markets, also known as High-Frequency Trading.</p>
+<p>Another type of financial activity trading firms perform is Market Making. The idea is to create buy and sell orders of the same asset simultaneously but with a price difference, also called spread; the presence of small independent actors consuming orders will lead the firm to perform a revenue. An interesting open-source project already implementing this strategy is Hummingbot. Unfortunately, the project only provides a few connectors toward a small group of over-competitive markets, such as Binance or Bitfinex. On the other hand, it offers many strategies such as Cross Exchange Market Making: a mix of Market Making and Arbitrage. This strategy places orders in a market leveraging better prices from another.</p>
+<p>I wondered which pairs of crypto markets this strategy could have been successful since the trading bot running the code should have low latency toward both markets.</p>
+<p>Here's where physical locality is paramount: the crypto markets and the trading bot must reside on the same data center. That's why I wrote a program that would suggest me pairs of colocated crypto markets.</p>
+<p>I initially wrote a web scraper for CoinMarketCap, but then I realized the URLs listed on the website are markets' landing pages not the real APIs URLs. So I leveraged an open-source library that already implements a unified API toward hundreds of crypto markets: CCXT. 
+Following the code used to extract the URLs from the library:</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse1"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse1" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">ccxt</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">import_module</span>
+
+<span class="n">ccxt_modules</span> <span class="o">=</span> <span class="p">[</span><span class="n">mod</span> <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">ccxt</span><span class="p">)</span> <span class="k">if</span> <span class="n">mod</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">()</span> <span class="ow">and</span> <span class="n">mod</span> <span class="ow">not</span> <span class="ow">in</span> 
+                <span class="p">[</span><span class="s1">'base'</span><span class="p">,</span><span class="s1">'decimal_to_precision'</span><span class="p">,</span><span class="s1">'error_hierarchy'</span><span class="p">,</span>
+                 <span class="s1">'errors'</span><span class="p">,</span><span class="s1">'exchanges'</span><span class="p">,</span><span class="s1">'static_dependencies'</span><span class="p">]]</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">ccxt_modules</span><span class="p">:</span>
+    <span class="n">full_module_name</span> <span class="o">=</span> <span class="s2">"ccxt."</span> <span class="o">+</span> <span class="n">mod</span>
+
+    <span class="n">imp_module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">full_module_name</span><span class="p">)</span>
+    <span class="n">describe</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">imp_module</span><span class="p">,</span> <span class="n">mod</span><span class="p">)()</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+    <span class="n">api_elem</span> <span class="o">=</span> <span class="n">describe</span><span class="p">[</span><span class="s1">'urls'</span><span class="p">][</span><span class="s1">'api'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">api_elem</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">api_elem</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">'private'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'private'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'v3Private'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'v3Private'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'trade'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'trade'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'api'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'api'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'public'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'public'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'rest'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'rest'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'publicV2'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'publicV2'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="s1">'current'</span> <span class="ow">in</span> <span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="s1">'current'</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">api_elem</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_elem</span><span class="p">[</span><span class="n">api_elem</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Unexpected json structure"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">'hostname'</span> <span class="ow">in</span> <span class="n">api_url</span><span class="p">:</span>
+        <span class="n">api_url</span> <span class="o">=</span> <span class="n">api_url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="n">describe</span><span class="p">[</span><span class="s1">'hostname'</span><span class="p">])</span>
+
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">describe</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="n">api_url</span><span class="p">])</span>
+
+<span class="n">exchanges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'name'</span><span class="p">,</span><span class="s1">'api_url'</span><span class="p">])</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'name'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">"Got {len(exchanges_df)} URLs:"</span><span class="p">)</span>
+<span class="n">exchanges_df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">exchanges_df</span><span class="o">.</span><span class="n">api_url</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">55</span><span class="p">:</span><span class="mi">65</span><span class="p">]</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+
+<pre class="stream_stdout">Got 124 URLs:
+</pre>
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     vaultoro
+    </th>
+    <td>
+     https://api.vaultoro.com
+    </td>
+   </tr>
+<tr>
+<th>
+     bitfinex2
+    </th>
+    <td>
+     https://api.bitfinex.com
+    </td>
+   </tr>
+<tr>
+<th>
+     luno
+    </th>
+    <td>
+     https://api.luno.com/api
+    </td>
+   </tr>
+<tr>
+<th>
+     gateio
+    </th>
+    <td>
+     https://data.gate.io/api
+    </td>
+   </tr>
+<tr>
+<th>
+     bitflyer
+    </th>
+    <td>
+     https://api.bitflyer.com
+    </td>
+   </tr>
+<tr>
+<th>
+     indodax
+    </th>
+    <td>
+     https://indodax.com/tapi
+    </td>
+   </tr>
+<tr>
+<th>
+     vcc
+    </th>
+    <td>
+     https://api.vcc.exchange
+    </td>
+   </tr>
+<tr>
+<th>
+     coinbase
+    </th>
+    <td>
+     https://api.coinbase.com
+    </td>
+   </tr>
+<tr>
+<th>
+     bitforex
+    </th>
+    <td>
+     https://api.bitforex.com
+    </td>
+   </tr>
+<tr>
+<th>
+     bitfinex
+    </th>
+    <td>
+     https://api.bitfinex.com
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<hr class="major">
+<p>Each exchange market has its API managed by a specific Web Server. I decided to locate each web server by using its IP address:</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse2"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse2" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="k">def</span> <span class="nf">extract_domain</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">hostname</span>
+    <span class="k">return</span> <span class="n">domain</span>
+
+<span class="k">def</span> <span class="nf">get_ip</span><span class="p">(</span><span class="n">domain</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostbyname</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="n">exchanges_df</span><span class="p">[</span><span class="s1">'api_url_domain'</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchanges_df</span><span class="o">.</span><span class="n">api_url</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">extract_domain</span><span class="p">)</span>
+<span class="n">exchanges_df</span><span class="p">[</span><span class="s1">'api_ip'</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchanges_df</span><span class="p">[</span><span class="s1">'api_url_domain'</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_ip</span><span class="p">)</span>
+<span class="n">exchanges_df</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">exchanges_df</span><span class="o">.</span><span class="n">api_url_domain</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">)[[</span><span class="s1">'api_url_domain'</span><span class="p">,</span> <span class="s1">'api_ip'</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     api_ip
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     acx
+    </th>
+    <td>
+     acx.io
+    </td>
+    <td>
+     3.105.177.105
+    </td>
+   </tr>
+<tr>
+<th>
+     cex
+    </th>
+    <td>
+     cex.io
+    </td>
+    <td>
+     104.20.148.108
+    </td>
+   </tr>
+<tr>
+<th>
+     cdax
+    </th>
+    <td>
+     cdax.io
+    </td>
+    <td>
+     104.18.167.196
+    </td>
+   </tr>
+<tr>
+<th>
+     kuna
+    </th>
+    <td>
+     kuna.io
+    </td>
+    <td>
+     104.20.171.51
+    </td>
+   </tr>
+<tr>
+<th>
+     bigone
+    </th>
+    <td>
+     big.one
+    </td>
+    <td>
+     92.122.95.90
+    </td>
+   </tr>
+<tr>
+<th>
+     ftx
+    </th>
+    <td>
+     ftx.com
+    </td>
+    <td>
+     104.18.27.153
+    </td>
+   </tr>
+<tr>
+<th>
+     ice3x
+    </th>
+    <td>
+     ice3x.com
+    </td>
+    <td>
+     172.67.68.147
+    </td>
+   </tr>
+<tr>
+<th>
+     bitmax
+    </th>
+    <td>
+     bitmax.io
+    </td>
+    <td>
+     104.19.246.31
+    </td>
+   </tr>
+<tr>
+<th>
+     yobit
+    </th>
+    <td>
+     yobit.net
+    </td>
+    <td>
+     104.16.242.98
+    </td>
+   </tr>
+<tr>
+<th>
+     bitbay
+    </th>
+    <td>
+     bitbay.net
+    </td>
+    <td>
+     104.18.4.135
+    </td>
+   </tr>
+<tr>
+<th>
+     bw
+    </th>
+    <td>
+     www.bw.com
+    </td>
+    <td>
+     172.67.37.237
+    </td>
+   </tr>
+<tr>
+<th>
+     bl3p
+    </th>
+    <td>
+     api.bl3p.eu
+    </td>
+    <td>
+     31.220.31.102
+    </td>
+   </tr>
+<tr>
+<th>
+     indodax
+    </th>
+    <td>
+     indodax.com
+    </td>
+    <td>
+     104.16.172.96
+    </td>
+   </tr>
+<tr>
+<th>
+     zaif
+    </th>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     52.68.66.83
+    </td>
+   </tr>
+<tr>
+<th>
+     coinmate
+    </th>
+    <td>
+     coinmate.io
+    </td>
+    <td>
+     104.26.4.5
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<hr class="major">
+<p>On the Internet, each IP address belongs to an Autonomous System.
+Simplifying, an Autonomous System (AS) is a collection of public IP addresses belonging to a single administrative entity.
+The Internet Assigned Numbers Authority (IANA) assigns a single unique identifier to each Autonomous System, also known as Autonomous System Number (ASN).</p>
+<p>I  used an open-source library: <a href="https://github.com/hadiasghari/pyasn">pyasn</a>, developed by the <a href="http://econsec.tbm.tudlft.nl">Economics of Cybersecurity research group</a> at the Delft University of Technology. It allows offline retrieval of an ASN from a generic IP address. 
+It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and builds local data structures for fast retrieval:</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse7"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse7" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%capture</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">pyasn</span>
+<span class="err">!</span><span class="n">pyasn_util_download</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">latest</span>
+<span class="err">!</span><span class="n">pyasn_util_convert</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">single</span> <span class="o">*.</span><span class="n">bz2</span> <span class="n">ipasn</span><span class="o">.</span><span class="n">dat</span>
+<span class="err">!</span><span class="n">rm</span> <span class="o">*.</span><span class="n">bz2</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+<hr class="major">
+<p>Here's the code I used to retrieve each Autonomous System Number from each IP address:</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse11"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse11" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pyasn</span>
+
+<span class="n">asndb</span> <span class="o">=</span> <span class="n">pyasn</span><span class="o">.</span><span class="n">pyasn</span><span class="p">(</span><span class="s1">'./ipasn.dat'</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_get_asn</span><span class="p">(</span><span class="n">ip</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">asndb</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="n">ip</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">ip</span>
+
+
+<span class="n">exchanges_df</span><span class="p">[</span><span class="s1">'api_ip_prefix'</span><span class="p">]</span> <span class="o">=</span> <span class="n">exchanges_df</span><span class="p">[</span><span class="s1">'api_ip'</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">_get_asn</span><span class="p">)</span>
+<span class="n">exchanges_df</span><span class="p">[[</span><span class="s1">'api_ip_prefix'</span><span class="p">]]</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_ip_prefix
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     aax
+    </th>
+    <td>
+     13.250.0.0/15
+    </td>
+   </tr>
+<tr>
+<th>
+     acx
+    </th>
+    <td>
+     3.104.0.0/14
+    </td>
+   </tr>
+<tr>
+<th>
+     aofex
+    </th>
+    <td>
+     172.67.16.0/20
+    </td>
+   </tr>
+<tr>
+<th>
+     bequant
+    </th>
+    <td>
+     104.26.0.0/20
+    </td>
+   </tr>
+<tr>
+<th>
+     bibox
+    </th>
+    <td>
+     172.67.64.0/20
+    </td>
+   </tr>
+<tr>
+<th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+   </tr>
+<tr>
+<th>
+     xbtce
+    </th>
+    <td>
+     195.154.0.0/16
+    </td>
+   </tr>
+<tr>
+<th>
+     xena
+    </th>
+    <td>
+     104.22.64.0/20
+    </td>
+   </tr>
+<tr>
+<th>
+     yobit
+    </th>
+    <td>
+     104.16.240.0/20
+    </td>
+   </tr>
+<tr>
+<th>
+     zaif
+    </th>
+    <td>
+     52.68.0.0/15
+    </td>
+   </tr>
+<tr>
+<th>
+     zb
+    </th>
+    <td>
+     47.244.128.0/17
+    </td>
+   </tr>
+</tbody>
+</table>
+<p>
+  124 rows × 1 columns
+ </p>
+</div>
+</div>
+
+
+
+<hr class="major">
+<p>Amazon Web Services (AWS) publishes its current IP address ranges in <a href="https://docs.aws.amazon.com/general/latest/gr/aws-ip-ranges.html">JSON format</a>, containing data regarding which IP prefix corresponds to which AWS region.</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse5"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse5" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'https://ip-ranges.amazonaws.com/ip-ranges.json'</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="n">aws_ip_ranges_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">req</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'prefixes'</span><span class="p">],</span>  
+                                <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'ip_prefix'</span><span class="p">,</span> 
+                                         <span class="s1">'region'</span><span class="p">,</span> 
+                                         <span class="s1">'service'</span><span class="p">,</span> 
+                                         <span class="s1">'network_border_group'</span><span class="p">])</span>
+<span class="n">aws_ip_ranges_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'ip_prefix'</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">aws_ip_ranges_df</span><span class="p">[[</span><span class="s1">'region'</span><span class="p">]]</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     ip_prefix
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     3.5.140.0/22
+    </th>
+    <td>
+     ap-northeast-2
+    </td>
+   </tr>
+<tr>
+<th>
+     15.230.56.104/31
+    </th>
+    <td>
+     us-east-1
+    </td>
+   </tr>
+<tr>
+<th>
+     35.180.0.0/16
+    </th>
+    <td>
+     eu-west-3
+    </td>
+   </tr>
+<tr>
+<th>
+     52.93.153.170/32
+    </th>
+    <td>
+     eu-west-2
+    </td>
+   </tr>
+<tr>
+<th>
+     52.93.178.234/32
+    </th>
+    <td>
+     us-west-1
+    </td>
+   </tr>
+<tr>
+<th>
+     ...
+    </th>
+    <td>
+     ...
+    </td>
+   </tr>
+<tr>
+<th>
+     44.242.161.8/31
+    </th>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+<tr>
+<th>
+     44.242.184.128/25
+    </th>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+<tr>
+<th>
+     52.43.76.88/29
+    </th>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+<tr>
+<th>
+     54.190.198.32/28
+    </th>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+<tr>
+<th>
+     54.244.46.0/23
+    </th>
+    <td>
+     us-west-2
+    </td>
+   </tr>
+</tbody>
+</table>
+<p>
+  3963 rows × 1 columns
+ </p>
+</div>
+</div>
+
+
+
+<hr class="major">
+<p>I joined those tables to identify which AWS facility hosted any exchange markets.</p>
+
+<hr class="major">
+<div class="card">
+    <div class="card-header" id="headingThree">
+        <h2 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse28"><i class="fa fa-plus"></i> Show code <i class="icon brands fa-python"></i></button>
+        </h2>
+    </div>
+    <div id="code_collapse28" class="collapse">
+        <div class="card-body">
+            <pre style="resize: both;"><code><div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
+
+<span class="n">exchanges_aws_df</span> <span class="o">=</span> <span class="n">exchanges_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">aws_ip_ranges_df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'left'</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">'api_ip_prefix'</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">region</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">exchanges_aws_df</span><span class="p">[[</span><span class="s1">'api_url_domain'</span><span class="p">,</span> <span class="s1">'region'</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'region'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+</pre></div>
+</code></pre>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     bitget
+    </th>
+    <td>
+     api.bitget.com
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+   </tr>
+<tr>
+<th>
+     gateio
+    </th>
+    <td>
+     data.gate.io
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+   </tr>
+<tr>
+<th>
+     zaif
+    </th>
+    <td>
+     api.zaif.jp
+    </td>
+    <td>
+     ap-northeast-1
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     gopax
+    </th>
+    <td>
+     api.gopax.co.kr
+    </td>
+    <td>
+     ap-northeast-2
+    </td>
+   </tr>
+<tr>
+<th>
+     upbit
+    </th>
+    <td>
+     api.upbit.com
+    </td>
+    <td>
+     ap-northeast-2
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     aax
+    </th>
+    <td>
+     api.aax.com
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+   </tr>
+<tr>
+<th>
+     bytetrade
+    </th>
+    <td>
+     api-v2.byte-trade.com
+    </td>
+    <td>
+     ap-southeast-1
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     acx
+    </th>
+    <td>
+     acx.io
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+   </tr>
+<tr>
+<th>
+     independentreserve
+    </th>
+    <td>
+     api.independentreserve.com
+    </td>
+    <td>
+     ap-southeast-2
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+    
+
+
+<div class="data_html">
+<div>
+ <table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>
+    </th>
+    <th>
+     api_url_domain
+    </th>
+    <th>
+     region
+    </th>
+   </tr>
+<tr>
+<th>
+     name
+    </th>
+    <th>
+    </th>
+    <th>
+    </th>
+   </tr>
+</thead>
+<tbody>
+<tr>
+<th>
+     bitmex
+    </th>
+    <td>
+     www.bitmex.com
+    </td>
+    <td>
+     eu-west-1
+    </td>
+   </tr>
+<tr>
+<th>
+     coinfloor
+    </th>
+    <td>
+     webapi.coinfloor.co.uk
+    </td>
+    <td>
+     eu-west-1
+    </td>
+   </tr>
+<tr>
+<th>
+     idex
+    </th>
+    <td>
+     api.idex.io
+    </td>
+    <td>
+     eu-west-1
+    </td>
+   </tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<hr class="major">
+<h3>Conclusions</h3>
+<p>I used this code for identifying five groups of co-located crypto markets.
+Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.</p>
+<p>Thanks for reading and see you at the next post!</p>
+
+<hr class="major">
+<!-- Load mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML-full,Safe"> </script><!-- MathJax configuration --><script type="text/x-mathjax-config">
+    init_mathjax = function() {
+        if (window.MathJax) {
+        // MathJax loaded
+            MathJax.Hub.Config({
+                TeX: {
+                    equationNumbers: {
+                    autoNumber: "AMS",
+                    useLabelIds: true
+                    }
+                },
+                tex2jax: {
+                    inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                displayAlign: 'center',
+                CommonHTML: {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                },
+                "HTML-CSS": {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                }
+            });
+        
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+    }
+    init_mathjax();
+    </script><!-- End of mathjax configuration -->
+</div>
+        <aside class="postpromonav"><nav></nav></aside></article></section>
+</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar" class="inactive">
+						<div class="inner">
+						  <!-- Search -->
+							<section id="search" class="alt"><form method="get" action="https://www.google.com/search?q=site:creativequant.dev">
+								<input type="text" name="q" id="q" placeholder="Search">
+</form>
+							</section><!-- Menu --><nav id="menu"><header class="major"><h2>Menu</h2>
+								</header><ul>
+<li><a href="../../">Homepage</a></li>
+								</ul></nav><footer id="footer"><p class="copyright">Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+</div>
+					</div>
+			</div>
+
+		<!-- Scripts -->
+
+			            <script src="../../assets/js/jquery.min.js"></script><script src="../../assets/js/baguetteBox.min.js"></script><script src="../../assets/js/browser.min.js"></script><script src="../../assets/js/breakpoints.min.js"></script><script src="../../assets/js/util.js"></script><script src="../../assets/js/main.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script><script>
+            $(document).ready(function(){
+                // Add minus icon for collapse element which is open by default
+                $(".collapse.show").each(function(){
+                    $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+                });
+
+                // Toggle plus minus icon on show hide of collapse element
+                $(".collapse").on('show.bs.collapse', function(){
+                    $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+                }).on('hide.bs.collapse', function(){
+                    $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+                });
+            });
+        </script><script>
+			baguetteBox.run('div#content', {
+				ignoreClass: 'islink',
+				captions: function(element){var i=element.getElementsByTagName('img')[0];return i===undefined?'':i.alt;}});
+			</script>
+</body>
+</html>

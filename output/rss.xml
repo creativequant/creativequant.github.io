@@ -1,0 +1,1158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Creative Quant</title><link>https://creativequant.dev/</link><description>Mind blowing creative ideas on quantitative analysis.</description><atom:link href="https://creativequant.dev/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:eracle@posteo.eu"&gt;creativequant.dev&lt;/a&gt; </copyright><lastBuildDate>Wed, 24 Feb 2021 14:57:11 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Where are crypto markets colocated?</title><link>https://creativequant.dev/posts/where-are-crypto-markets-colocated/</link><dc:creator>creativequant.dev</dc:creator><description>&lt;figure&gt;&lt;img src="https://creativequant.dev/images/servers.png"&gt;&lt;/figure&gt; &lt;p&gt;I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.&lt;/p&gt;
+&lt;p&gt;Cryptocurrency markets are privately owned web platforms that allow users to exchange different cryptos using APIs to get and place orders. Usual cryptocurrency flow starts from the user's private wallet to a wallet owned by the market. After the market verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the exchanges done are off-chain transactions, which means they don't leverage any blockchain at all.
+They are not blockchain-based since the market holds a private database taking note of its users' amounts. In other words, the market database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.
+A blockchain is a distributed ledger used for storing the transactions that change the amounts owned by each wallet, which we call on-chain transactions.&lt;/p&gt;
+&lt;p&gt;This constellation of privately-held centralized ledgers is not the only way to exchange cryptocurrencies: recent developments were using Distributed Finance (DeFi), but maybe I will talk about that in another post.&lt;/p&gt;
+&lt;p&gt;There are main differences between cryptocurrency markets and well-established stock exchanges such as Nasdaq or Euronext:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Absent regulation:
+Those places are the heaven for neoliberalists: the only fees on transactions are the only ones enforced by platform owners.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Security threats:
+It's frequent to see those platforms as victims of cybercriminals, which often aim to their debts database and private wallets. The amount of risk in having a firm trading crypto assets is higher than classical finance.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Higher volatility:
+Compared with established classical stocks, cryptocurrencies have a bigger chance to change their value. Any crypto trading firm should face the reality that all the assets they invested in can suddenly change in value. To mitigate this phenomenon, a cryptocurrency finance firm introduced a coin designed to have the same value of US dollars: USD Coin.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;One type of financial activity is Risk-Free arbitrage, in its simplest form is the strategy of buying an asset and resell it at a higher price. Trading firms leverage ad-hoc infrastructure to have low latency toward exchange markets, also known as High-Frequency Trading.&lt;/p&gt;
+&lt;p&gt;Another type of financial activity trading firms perform is Market Making. The idea is to create buy and sell orders of the same asset simultaneously but with a price difference, also called spread; the presence of small independent actors consuming orders will lead the firm to perform a revenue. An interesting open-source project already implementing this strategy is Hummingbot. Unfortunately, the project only provides a few connectors toward a small group of over-competitive markets, such as Binance or Bitfinex. On the other hand, it offers many strategies such as Cross Exchange Market Making: a mix of Market Making and Arbitrage. This strategy places orders in a market leveraging better prices from another.&lt;/p&gt;
+&lt;p&gt;I wondered which pairs of crypto markets this strategy could have been successful since the trading bot running the code should have low latency toward both markets.&lt;/p&gt;
+&lt;p&gt;Here's where physical locality is paramount: the crypto markets and the trading bot must reside on the same data center. That's why I wrote a program that would suggest me pairs of colocated crypto markets.&lt;/p&gt;
+&lt;p&gt;I initially wrote a web scraper for CoinMarketCap, but then I realized the URLs listed on the website are markets' landing pages not the real APIs URLs. So I leveraged an open-source library that already implements a unified API toward hundreds of crypto markets: CCXT. 
+Following the code used to extract the URLs from the library:&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse1"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse1" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pandas&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;pd&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;ccxt&lt;/span&gt;
+&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;importlib&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;import_module&lt;/span&gt;
+
+&lt;span class="n"&gt;ccxt_modules&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;mod&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="nb"&gt;dir&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ccxt&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;islower&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="ow"&gt;and&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; 
+                &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'base'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'decimal_to_precision'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'error_hierarchy'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                 &lt;span class="s1"&gt;'errors'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'exchanges'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'static_dependencies'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;span class="n"&gt;rows&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[]&lt;/span&gt;
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;ccxt_modules&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+    &lt;span class="n"&gt;full_module_name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"ccxt."&lt;/span&gt; &lt;span class="o"&gt;+&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;
+
+    &lt;span class="n"&gt;imp_module&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;import_module&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;full_module_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nb"&gt;getattr&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;imp_module&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;mod&lt;/span&gt;&lt;span class="p"&gt;)()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;api_elem&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'urls'&lt;/span&gt;&lt;span class="p"&gt;][&lt;/span&gt;&lt;span class="s1"&gt;'api'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;str&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;
+    &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;assert&lt;/span&gt; &lt;span class="nb"&gt;isinstance&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;'private'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'private'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'v3Private'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'v3Private'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'trade'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'trade'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'api'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'public'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'public'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'rest'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'rest'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'publicV2'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'publicV2'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="s1"&gt;'current'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'current'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="k"&gt;elif&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;api_elem&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;keys&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+        &lt;span class="k"&gt;else&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"Unexpected json structure"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="s1"&gt;'hostname'&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;api_url&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;api_url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;api_url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;hostname&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'hostname'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+    &lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;append&lt;/span&gt;&lt;span class="p"&gt;([&lt;/span&gt;&lt;span class="n"&gt;describe&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'id'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;api_url&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;rows&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;columns&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;&lt;span class="s1"&gt;'api_url'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'name'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;f&lt;/span&gt;&lt;span class="s2"&gt;"Got {len(exchanges_df)} URLs:"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reindex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;api_url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort_values&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;iloc&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="mi"&gt;55&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;&lt;span class="mi"&gt;65&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+
+    
+
+&lt;pre class="stream_stdout"&gt;Got 124 URLs:
+&lt;/pre&gt;
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     vaultoro
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.vaultoro.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitfinex2
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.bitfinex.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     luno
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.luno.com/api
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     gateio
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://data.gate.io/api
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitflyer
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.bitflyer.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     indodax
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://indodax.com/tapi
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     vcc
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.vcc.exchange
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     coinbase
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.coinbase.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitforex
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.bitforex.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitfinex
+    &lt;/th&gt;
+    &lt;td&gt;
+     https://api.bitfinex.com
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+&lt;hr class="major"&gt;&lt;p&gt;Each exchange market has its API managed by a specific Web Server. I decided to locate each web server by using its IP address:&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse2"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse2" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;urllib.parse&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;urlparse&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;socket&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;extract_domain&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;domain&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;urlparse&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;hostname&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;domain&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;get_ip&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;socket&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;gethostbyname&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;Exception&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;pass&lt;/span&gt;
+
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api_url_domain'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;api_url&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dropna&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;extract_domain&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api_ip'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api_url_domain'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dropna&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;get_ip&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reindex&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;api_url_domain&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;str&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;len&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;sort_values&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;index&lt;/span&gt;&lt;span class="p"&gt;)[[&lt;/span&gt;&lt;span class="s1"&gt;'api_url_domain'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'api_ip'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;head&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;15&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_ip
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     acx
+    &lt;/th&gt;
+    &lt;td&gt;
+     acx.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     3.105.177.105
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     cex
+    &lt;/th&gt;
+    &lt;td&gt;
+     cex.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.20.148.108
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     cdax
+    &lt;/th&gt;
+    &lt;td&gt;
+     cdax.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.18.167.196
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     kuna
+    &lt;/th&gt;
+    &lt;td&gt;
+     kuna.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.20.171.51
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bigone
+    &lt;/th&gt;
+    &lt;td&gt;
+     big.one
+    &lt;/td&gt;
+    &lt;td&gt;
+     92.122.95.90
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     ftx
+    &lt;/th&gt;
+    &lt;td&gt;
+     ftx.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.18.27.153
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     ice3x
+    &lt;/th&gt;
+    &lt;td&gt;
+     ice3x.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     172.67.68.147
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitmax
+    &lt;/th&gt;
+    &lt;td&gt;
+     bitmax.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.19.246.31
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     yobit
+    &lt;/th&gt;
+    &lt;td&gt;
+     yobit.net
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.16.242.98
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitbay
+    &lt;/th&gt;
+    &lt;td&gt;
+     bitbay.net
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.18.4.135
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bw
+    &lt;/th&gt;
+    &lt;td&gt;
+     www.bw.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     172.67.37.237
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bl3p
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.bl3p.eu
+    &lt;/td&gt;
+    &lt;td&gt;
+     31.220.31.102
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     indodax
+    &lt;/th&gt;
+    &lt;td&gt;
+     indodax.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.16.172.96
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     zaif
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.zaif.jp
+    &lt;/td&gt;
+    &lt;td&gt;
+     52.68.66.83
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     coinmate
+    &lt;/th&gt;
+    &lt;td&gt;
+     coinmate.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     104.26.4.5
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+&lt;hr class="major"&gt;&lt;p&gt;On the Internet, each IP address belongs to an Autonomous System.
+Simplifying, an Autonomous System (AS) is a collection of public IP addresses belonging to a single administrative entity.
+The Internet Assigned Numbers Authority (IANA) assigns a single unique identifier to each Autonomous System, also known as Autonomous System Number (ASN).&lt;/p&gt;
+&lt;p&gt;I  used an open-source library: &lt;a href="https://github.com/hadiasghari/pyasn"&gt;pyasn&lt;/a&gt;, developed by the &lt;a href="http://econsec.tbm.tudlft.nl"&gt;Economics of Cybersecurity research group&lt;/a&gt; at the Delft University of Technology. It allows offline retrieval of an ASN from a generic IP address. 
+It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and builds local data structures for fast retrieval:&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse7"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse7" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;%%capture&lt;/span&gt;
+&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;pip&lt;/span&gt; &lt;span class="n"&gt;install&lt;/span&gt; &lt;span class="n"&gt;pyasn&lt;/span&gt;
+&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;pyasn_util_download&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;latest&lt;/span&gt;
+&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;pyasn_util_convert&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;py&lt;/span&gt; &lt;span class="o"&gt;--&lt;/span&gt;&lt;span class="n"&gt;single&lt;/span&gt; &lt;span class="o"&gt;*.&lt;/span&gt;&lt;span class="n"&gt;bz2&lt;/span&gt; &lt;span class="n"&gt;ipasn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dat&lt;/span&gt;
+&lt;span class="err"&gt;!&lt;/span&gt;&lt;span class="n"&gt;rm&lt;/span&gt; &lt;span class="o"&gt;*.&lt;/span&gt;&lt;span class="n"&gt;bz2&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;hr class="major"&gt;&lt;p&gt;Here's the code I used to retrieve each Autonomous System Number from each IP address:&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse11"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse11" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pyasn&lt;/span&gt;
+
+&lt;span class="n"&gt;asndb&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pyasn&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;pyasn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'./ipasn.dat'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_get_asn&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;asndb&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;lookup&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;ip&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="ow"&gt;or&lt;/span&gt; &lt;span class="n"&gt;ip&lt;/span&gt;
+
+
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api_ip_prefix'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'api_ip'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;dropna&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;apply&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;_get_asn&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'api_ip_prefix'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_ip_prefix
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     aax
+    &lt;/th&gt;
+    &lt;td&gt;
+     13.250.0.0/15
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     acx
+    &lt;/th&gt;
+    &lt;td&gt;
+     3.104.0.0/14
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     aofex
+    &lt;/th&gt;
+    &lt;td&gt;
+     172.67.16.0/20
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bequant
+    &lt;/th&gt;
+    &lt;td&gt;
+     104.26.0.0/20
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bibox
+    &lt;/th&gt;
+    &lt;td&gt;
+     172.67.64.0/20
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     ...
+    &lt;/th&gt;
+    &lt;td&gt;
+     ...
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     xbtce
+    &lt;/th&gt;
+    &lt;td&gt;
+     195.154.0.0/16
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     xena
+    &lt;/th&gt;
+    &lt;td&gt;
+     104.22.64.0/20
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     yobit
+    &lt;/th&gt;
+    &lt;td&gt;
+     104.16.240.0/20
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     zaif
+    &lt;/th&gt;
+    &lt;td&gt;
+     52.68.0.0/15
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     zb
+    &lt;/th&gt;
+    &lt;td&gt;
+     47.244.128.0/17
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;p&gt;
+  124 rows × 1 columns
+ &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+&lt;hr class="major"&gt;&lt;p&gt;Amazon Web Services (AWS) publishes its current IP address ranges in &lt;a href="https://docs.aws.amazon.com/general/latest/gr/aws-ip-ranges.html"&gt;JSON format&lt;/a&gt;, containing data regarding which IP prefix corresponds to which AWS region.&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse5"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse5" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;requests&lt;/span&gt;
+
+&lt;span class="n"&gt;url&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'https://ip-ranges.amazonaws.com/ip-ranges.json'&lt;/span&gt;
+&lt;span class="n"&gt;req&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;requests&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;get&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="n"&gt;aws_ip_ranges_df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pd&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DataFrame&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;req&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;json&lt;/span&gt;&lt;span class="p"&gt;()[&lt;/span&gt;&lt;span class="s1"&gt;'prefixes'&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;  
+                                &lt;span class="n"&gt;columns&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'ip_prefix'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                                         &lt;span class="s1"&gt;'region'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                                         &lt;span class="s1"&gt;'service'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; 
+                                         &lt;span class="s1"&gt;'network_border_group'&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+&lt;span class="n"&gt;aws_ip_ranges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;set_index&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'ip_prefix'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;inplace&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="n"&gt;aws_ip_ranges_df&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'region'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     ip_prefix
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     3.5.140.0/22
+    &lt;/th&gt;
+    &lt;td&gt;
+     ap-northeast-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     15.230.56.104/31
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-east-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     35.180.0.0/16
+    &lt;/th&gt;
+    &lt;td&gt;
+     eu-west-3
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     52.93.153.170/32
+    &lt;/th&gt;
+    &lt;td&gt;
+     eu-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     52.93.178.234/32
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     ...
+    &lt;/th&gt;
+    &lt;td&gt;
+     ...
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     44.242.161.8/31
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     44.242.184.128/25
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     52.43.76.88/29
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     54.190.198.32/28
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     54.244.46.0/23
+    &lt;/th&gt;
+    &lt;td&gt;
+     us-west-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;p&gt;
+  3963 rows × 1 columns
+ &lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+&lt;hr class="major"&gt;&lt;p&gt;I joined those tables to identify which AWS facility hosted any exchange markets.&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapse28"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapse28" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;IPython.display&lt;/span&gt; &lt;span class="k"&gt;import&lt;/span&gt; &lt;span class="n"&gt;display&lt;/span&gt;
+
+&lt;span class="n"&gt;exchanges_aws_df&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;exchanges_df&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;merge&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;aws_ip_ranges_df&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;how&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'left'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;left_on&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'api_ip_prefix'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;right_index&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;region&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;group&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;exchanges_aws_df&lt;/span&gt;&lt;span class="p"&gt;[[&lt;/span&gt;&lt;span class="s1"&gt;'api_url_domain'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'region'&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;drop_duplicates&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;groupby&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'region'&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="nb"&gt;len&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="n"&gt;display&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;group&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitget
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.bitget.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-northeast-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     gateio
+    &lt;/th&gt;
+    &lt;td&gt;
+     data.gate.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-northeast-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     zaif
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.zaif.jp
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-northeast-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     gopax
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.gopax.co.kr
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-northeast-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     upbit
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.upbit.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-northeast-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     aax
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.aax.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-southeast-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bytetrade
+    &lt;/th&gt;
+    &lt;td&gt;
+     api-v2.byte-trade.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-southeast-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     acx
+    &lt;/th&gt;
+    &lt;td&gt;
+     acx.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-southeast-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     independentreserve
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.independentreserve.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     ap-southeast-2
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+    
+
+
+&lt;div class="data_html"&gt;
+&lt;div&gt;
+ &lt;table border="1" class="dataframe"&gt;
+  &lt;thead&gt;
+   &lt;tr style="text-align: right;"&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+     api_url_domain
+    &lt;/th&gt;
+    &lt;th&gt;
+     region
+    &lt;/th&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     name
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+    &lt;th&gt;
+    &lt;/th&gt;
+   &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     bitmex
+    &lt;/th&gt;
+    &lt;td&gt;
+     www.bitmex.com
+    &lt;/td&gt;
+    &lt;td&gt;
+     eu-west-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     coinfloor
+    &lt;/th&gt;
+    &lt;td&gt;
+     webapi.coinfloor.co.uk
+    &lt;/td&gt;
+    &lt;td&gt;
+     eu-west-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+    &lt;th&gt;
+     idex
+    &lt;/th&gt;
+    &lt;td&gt;
+     api.idex.io
+    &lt;/td&gt;
+    &lt;td&gt;
+     eu-west-1
+    &lt;/td&gt;
+   &lt;/tr&gt;
+  &lt;/tbody&gt;
+ &lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+
+
+&lt;hr class="major"&gt;&lt;h3&gt;Conclusions&lt;/h3&gt;
+&lt;p&gt;I used this code for identifying five groups of co-located crypto markets.
+Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.&lt;/p&gt;
+&lt;p&gt;Thanks for reading and see you at the next post!&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+
+&lt;!-- Load mathjax --&gt;
+    &lt;script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-MML-AM_CHTML-full,Safe"&gt; &lt;/script&gt;
+    &lt;!-- MathJax configuration --&gt;
+    &lt;script type="text/x-mathjax-config"&gt;
+    init_mathjax = function() {
+        if (window.MathJax) {
+        // MathJax loaded
+            MathJax.Hub.Config({
+                TeX: {
+                    equationNumbers: {
+                    autoNumber: "AMS",
+                    useLabelIds: true
+                    }
+                },
+                tex2jax: {
+                    inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                    displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+                    processEscapes: true,
+                    processEnvironments: true
+                },
+                displayAlign: 'center',
+                CommonHTML: {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                },
+                "HTML-CSS": {
+                    linebreaks: { 
+                    automatic: true 
+                    }
+                }
+            });
+        
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        }
+    }
+    init_mathjax();
+    &lt;/script&gt;
+    &lt;!-- End of mathjax configuration --&gt;</description><guid>https://creativequant.dev/posts/where-are-crypto-markets-colocated/</guid><pubDate>Mon, 22 Feb 2021 19:52:05 GMT</pubDate></item></channel></rss>

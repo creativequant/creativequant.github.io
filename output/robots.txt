@@ -1,0 +1,4 @@
+Sitemap: https://creativequant.dev/sitemapindex.xml
+
+User-Agent: *
+Host: creativequant.dev
