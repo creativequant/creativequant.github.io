@@ -1903,16 +1903,19 @@ button,
       #main > .inner > section:first-of-type {
         border-top: 0 !important; }
   @media screen and (max-width: 1680px) {
-    #main > .inner {}
+    #main > .inner {
+        margin: 0 3em auto;}
       #main > .inner > section {
         padding: 5em 0 3em 0 ; } }
   @media screen and (max-width: 1280px) {
-    #main > .inner {}
+    #main > .inner {
+        margin: 0 2em auto;}
       #main > .inner > section {
         padding: 4em 0 2em 0 ; } }
   @media screen and (max-width: 736px) {
-    #main > .inner {}
-      #main > .inner > section {
+    #main > .inner {
+        margin: 0 1em auto;}
+    #main > .inner > section {
         padding: 3em 0 1em 0 ; } }
 
 /* Sidebar */
@@ -2142,10 +2145,10 @@ button,
     text-align: right; }
   @media screen and (max-width: 1680px) {
     #header {
-      padding-top: 2em; } }
+      padding-top: 4em; } }
   @media screen and (max-width: 736px) {
     #header {
-      padding-top: 2em; }
+      padding-top: 5em; }
       #header .logo {
         font-size: 1.25em;
         margin: 0; }

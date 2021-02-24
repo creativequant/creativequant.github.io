@@ -86,7 +86,7 @@
 'copy_assets:output/assets/sass/layout/_menu.scss', (64000, 404)
 'render_taxonomies:output/rss.xml', (300544, 3387)
 'copy_assets:output/assets/css/nikola_ipython.css', (216576, 520)
-'copy_assets:output/assets/css/main.css', (65536, 386)
+'copy_assets:output/assets/css/main.css', (65536, 385)
 'copy_assets:output/assets/sass/main.scss', (66048, 388)
 'robots_file:output/robots.txt', (66560, 136)
 'copy_assets:output/assets/sass/components/_row.scss', (67072, 409)
