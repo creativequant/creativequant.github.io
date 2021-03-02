@@ -4,9 +4,9 @@
     " vocab="http://ogp.me/ns" lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="description" content="I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.">
+<meta name="description" content="Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective is to identify the best facilities to host a high-frequency trading bot.">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Where are crypto markets colocated? | Creative Quant</title>
+<title>Where are cryptocurrency exchanges hosted? | Creative Quant</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 <link href="../../assets/css/rst_base.css" rel="stylesheet" type="text/css">
 <link href="../../assets/css/nikola_rst.css" rel="stylesheet" type="text/css">
@@ -17,13 +17,13 @@
 <meta name="theme-color" content="#f56a6a">
 <meta name="generator" content="Nikola (getnikola.com)">
 <link rel="alternate" type="application/rss+xml" title="RSS" hreflang="en" href="../../rss.xml">
-<link rel="canonical" href="https://creativequant.dev/posts/where-are-crypto-markets-colocated/">
+<link rel="canonical" href="https://creativequant.dev/posts/where-are-cryptocurrency-exchanges-hosted/">
 <!--[if lt IE 9]><script src="../../assets/js/html5shiv-printshiv.min.js"></script><![endif]--><meta name="author" content="creativequant.dev">
 <meta property="og:site_name" content="Creative Quant">
-<meta property="og:title" content="Where are crypto markets colocated?">
-<meta property="og:url" content="https://creativequant.dev/posts/where-are-crypto-markets-colocated/">
-<meta property="og:description" content="I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc phy">
-<meta property="og:image" content="https://creativequant.dev/images/servers.png">
+<meta property="og:title" content="Where are cryptocurrency exchanges hosted?">
+<meta property="og:url" content="https://creativequant.dev/posts/where-are-cryptocurrency-exchanges-hosted/">
+<meta property="og:description" content="Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective is to identify the best facilities to host a high-frequency trading bot.">
+<meta property="og:image" content="https://creativequant.dev/images/aws.png">
 <meta property="og:type" content="article">
 <meta property="article:published_time" content="2021-02-22T19:52:05Z">
 <!--
@@ -46,11 +46,14 @@
 <li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fcreativequant.dev&amp;title=&amp;summary=&amp;source=http%3A%2F%2Fcreativequant.dev" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
                         <li><a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fcreativequant.dev&amp;text=%20https%3A%2F%2Fcreativequant.dev" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
                         <li><a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcreativequant.dev&amp;quote=" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-                    </ul></header><!-- Content --><section><a href="."><h2>Where are crypto markets colocated?</h2></a>
-    <a href="." class="image"><img src="../../images/servers.png" alt="I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies." style="width: 100%;"></a>
+                    </ul></header><!-- Content --><section><a href="."><h2>Where are cryptocurrency exchanges hosted?</h2></a>
+    <a href="." class="image"><img src="../../images/aws.png" alt="Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective is to identify the best facilities to host a high-frequency trading bot." style="width: 100%;"></a>
     <h6>7 min read</h6>
     <article class="post-text h-entry hentry postpage" itemscope="itemscope" itemtype="http://schema.org/Article"><div class="e-content entry-content" itemprop="articleBody text">
-        <p>I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.</p>
+        <p>TL;DR: Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective is to identify the best facilities to host a high-frequency trading bot.</p>
+
+<hr class="major">
+<p>I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.</p>
 <p>Cryptocurrency markets are privately owned web platforms that allow users to exchange different cryptos using APIs to get and place orders. Usual cryptocurrency flow starts from the user's private wallet to a wallet owned by the market. After the market verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the exchanges done are off-chain transactions, which means they don't leverage any blockchain at all.
 They are not blockchain-based since the market holds a private database taking note of its users' amounts. In other words, the market database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.
 A blockchain is a distributed ledger used for storing the transactions that change the amounts owned by each wallet, which we call on-chain transactions.</p>
@@ -1164,8 +1167,10 @@ It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and
 
 <hr class="major">
 <h3>Conclusions</h3>
-<p>I used this code for identifying five groups of co-located crypto markets.
-Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.</p>
+<p>I leave you with this last image that shows two simultaneous pings launched from the same instance in AWS Tokyo: hitting both of them no more than 5 milliseconds.</p>
+<p>
+
+                                     <span class="image main"><img src="../../images/httping.gif" alt="Http Ping"></span></p>
 <p>Thanks for reading and see you at the next post!</p>
 
 <hr class="major">

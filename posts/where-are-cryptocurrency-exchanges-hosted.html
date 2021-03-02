@@ -1,4 +1,6 @@
-<p>I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.</p>
+<p>TL;DR: Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective is to identify the best facilities to host a high-frequency trading bot.</p>
+
+<hr class="major" /><p>I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.</p>
 <p>Cryptocurrency markets are privately owned web platforms that allow users to exchange different cryptos using APIs to get and place orders. Usual cryptocurrency flow starts from the user's private wallet to a wallet owned by the market. After the market verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the exchanges done are off-chain transactions, which means they don't leverage any blockchain at all.
 They are not blockchain-based since the market holds a private database taking note of its users' amounts. In other words, the market database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.
 A blockchain is a distributed ledger used for storing the transactions that change the amounts owned by each wallet, which we call on-chain transactions.</p>
@@ -1109,8 +1111,10 @@ It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and
 
 
 <hr class="major" /><h3>Conclusions</h3>
-<p>I used this code for identifying five groups of co-located crypto markets.
-Using those hints, I successfully launched an EC2 instance with 2 msec HTTPing toward two exchanges.</p>
+<p>I leave you with this last image that shows two simultaneous pings launched from the same instance in AWS Tokyo: hitting both of them no more than 5 milliseconds.</p>
+<p>
+
+                                     <span class="image main"><img src="/images/httping.gif" alt="Http Ping"></span></p>
 <p>Thanks for reading and see you at the next post!</p>
 
 <hr class="major" />
