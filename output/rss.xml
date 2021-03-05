@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Creative Quant</title><link>https://creativequant.dev/</link><description>Mind blowing creative ideas on quantitative analysis.</description><atom:link href="https://creativequant.dev/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:eracle@posteo.eu"&gt;creativequant.dev&lt;/a&gt; </copyright><lastBuildDate>Tue, 02 Mar 2021 22:21:01 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Where are cryptocurrency exchanges hosted?</title><link>https://creativequant.dev/posts/where-are-cryptocurrency-exchanges-hosted/</link><dc:creator>creativequant.dev</dc:creator><description>&lt;figure&gt;&lt;img src="https://creativequant.dev/images/aws.png"&gt;&lt;/figure&gt; &lt;p&gt;TL;DR: Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective was to identify the best facilities to host a high-frequency trading bot.&lt;/p&gt;
+<?xml-stylesheet type="text/xsl" href="assets/xml/rss.xsl" media="all"?><rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Creative Quant</title><link>https://creativequant.dev/</link><description>Mind blowing creative ideas on quantitative analysis.</description><atom:link href="https://creativequant.dev/rss.xml" rel="self" type="application/rss+xml"></atom:link><language>en</language><copyright>Contents © 2021 &lt;a href="mailto:eracle@posteo.eu"&gt;creativequant.dev&lt;/a&gt; </copyright><lastBuildDate>Fri, 05 Mar 2021 18:32:35 GMT</lastBuildDate><generator>Nikola (getnikola.com)</generator><docs>http://blogs.law.harvard.edu/tech/rss</docs><item><title>Where are cryptocurrency exchanges hosted?</title><link>https://creativequant.dev/posts/where-are-cryptocurrency-exchanges-hosted/</link><dc:creator>creativequant.dev</dc:creator><description>&lt;figure&gt;&lt;img src="https://creativequant.dev/images/aws.png"&gt;&lt;/figure&gt; &lt;p&gt;TL;DR: Here's how I discovered which data-center simultaneously hosts groups of cryptocurrency exchanges. The objective was to identify the best facilities to host a high-frequency trading bot.&lt;/p&gt;
 
 &lt;hr class="major"&gt;&lt;p&gt;I had a conversation with a friend about a mandatory trading firm's competitive advantage: having low latency access to exchange markets. Trading companies achieve low latency by leveraging ad-hoc physical infrastructure that allows them to access exchange markets fast, usually by investing upfront on their infrastructure or paying someone else to use theirs. Unfortunately, those are entry barriers for someone like me playing around with technology. So I wondered how that was in the world of cryptocurrencies.&lt;/p&gt;
-&lt;p&gt;Cryptocurrency exchanges are privately owned web platforms that allow users to buy and sell different cryptos. Usual cryptocurrency flow starts from the user's private wallet to a wallet owned by the exchange. Then, the platform verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the cryptocurrency transfers done are off-chain transactions, which means they don't leverage any blockchain at all.
-They are not based on any blockchain since the exchange holds a private database taking note of its users' amount owed. In other words, the exchange database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.
-A blockchain is a distributed ledger used for storing the transactions that change the amounts owned by each wallet, which we call on-chain transactions.&lt;/p&gt;
+&lt;p&gt;Cryptocurrency exchanges are privately owned web platforms that allow users to exchange different cryptocurrencies. 
+The first step for a user to use the platform is to transfer cryptocurrency from the user's private wallet to a wallet owned by the exchange. 
+We call those On-Chain transactions since they leverage a blockchain 
+to store all the transactions that happened and the changes in owned amount by each wallet. 
+After the platform verifies that the transaction happened on the blockchain, the user will see the amount increased on his dashboard. From now on, all the cryptocurrency transfers done are off-chain transactions, which means they don't leverage any blockchain at all.
+They are not based on any blockchain since the exchange holds a private database taking note of the amounts owed to its users. In other words, the exchange database performs as a centralized ledger taking note of its debts toward the users. We call off-chain transactions to distinguish them from the on-chain ones.&lt;/p&gt;
 &lt;p&gt;This constellation of privately-held centralized ledgers is not the only way to exchange cryptocurrencies: recent developments were using Distributed Finance (DeFi), but maybe I will talk about that in another post.&lt;/p&gt;
-&lt;p&gt;There are main differences between cryptocurrency markets and well-established stock exchanges such as Nasdaq or Euronext:&lt;/p&gt;
+&lt;p&gt;There are main differences between cryptocurrency exchanges and well-established stock exchanges such as Nasdaq or Euronext:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;Absent regulation:
-Those places are the heaven for neoliberalists: the only fees on transactions are the only ones enforced by platform owners.&lt;/p&gt;
+Those places are the heaven for Neoliberalists: the only fees on transactions are the only ones enforced by platform owners.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Security threats:
-It's frequent to see those platforms as victims of cybercriminals, which often aim to their debts database and private wallets. The amount of risk in having a firm trading crypto assets is higher than classical finance.&lt;/p&gt;
+It's frequent to see those platforms as victims of cybercriminals attacks. Cybercriminals aim to steal the crypto assets owned by the exchanges. That translates into higher risks for firms trading crypto assets than using classical finance.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Higher volatility:
 Compared with established classical stocks, cryptocurrencies have a bigger chance to change their value. Any crypto trading firm should face the reality that all the assets they invested in can suddenly change in value. To mitigate this phenomenon, a cryptocurrency finance firm introduced a coin designed to have the same value of US dollars: USD Coin.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;One type of financial activity is Risk-Free arbitrage, in its simplest form is the strategy of buying an asset and resell it at a higher price. Trading firms leverage ad-hoc infrastructure to have low latency toward exchange markets, also known as High-Frequency Trading.&lt;/p&gt;
-&lt;p&gt;Another type of financial activity trading firms perform is Market Making. The idea is to create buy and sell orders of the same asset simultaneously but with a price difference, also called spread; the presence of small independent actors consuming orders will lead the firm to perform a revenue. An interesting open-source project already implementing this strategy is Hummingbot. Unfortunately, the project only provides a few connectors toward a small group of over-competitive markets, such as Binance or Bitfinex. On the other hand, it offers many strategies such as Cross Exchange Market Making: a mix of Market Making and Arbitrage. This strategy places orders in a market leveraging better prices from another.&lt;/p&gt;
-&lt;p&gt;I wondered which pairs of crypto markets this strategy could have been successful since the trading bot running the code should have low latency toward both markets.&lt;/p&gt;
-&lt;p&gt;Here's where physical locality is paramount: the crypto markets and the trading bot must reside on the same data center. That's why I wrote a program that would suggest me pairs of colocated crypto markets.&lt;/p&gt;
-&lt;p&gt;I initially wrote a web scraper for CoinMarketCap, but then I realized the URLs listed on the website are markets' landing pages, not the real APIs URLs. So I leveraged an open-source library that already implements a unified API toward hundreds of crypto markets: CCXT. 
-Following the code used to extract the URLs from the library:&lt;/p&gt;
+&lt;p&gt;Another type of financial activity trading firms perform is Market Making. The idea is to create buy and sell orders of the same asset simultaneously but with a price difference, also called spread; the presence of small independent actors consuming orders will lead the firm to perform a revenue. An interesting open-source project already implementing this strategy is &lt;a href="https://hummingbot.io/"&gt;Hummingbot&lt;/a&gt;. Unfortunately, the project provides only a few connectors toward a small group of over-competitive exchanges, such as Binance or Bitfinex. On the other hand, it offers many strategies such as Cross Exchange Market Making: a mix of Market Making and Arbitrage.&lt;/p&gt;
+&lt;p&gt;The post's idea is to find groups of exchanges located in the same datacenter. A trading bot using Cross Exchange Market Making strategy can make money by running in the same datacenter and leveraging low latency toward both exchanges.&lt;/p&gt;
+&lt;p&gt;I extracted a list of all the API URLs using an open-source library that implements a unified interface toward hundreds of different crypto exchanges: &lt;a href="https://github.com/ccxt/ccxt"&gt;CCXT&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Here's the code I used to extract the URLs from the library:&lt;/p&gt;
 
 &lt;hr class="major"&gt;
 
@@ -470,7 +472,7 @@ It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and
     &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;hr class="major"&gt;&lt;p&gt;Here's the code I used to retrieve each Autonomous System Number from each IP address:&lt;/p&gt;
+&lt;hr class="major"&gt;&lt;p&gt;Then, I retrieved each Autonomous System Number from each IP address:&lt;/p&gt;
 
 &lt;hr class="major"&gt;
 
@@ -776,7 +778,7 @@ It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and
 
 
 
-&lt;hr class="major"&gt;&lt;p&gt;I joined those tables to identify which AWS facility hosted any exchange markets.&lt;/p&gt;
+&lt;hr class="major"&gt;&lt;p&gt;I joined those tables to identify which AWS facility hosted any exchange market.&lt;/p&gt;
 
 &lt;hr class="major"&gt;
 
@@ -1117,6 +1119,23 @@ It downloads and processes up-to-date routing data (the MRT/RIB BGP archive) and
 
                                      &lt;span class="image main"&gt;&lt;img src="https://creativequant.dev/images/httping.gif" alt="Http Ping"&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;p&gt;Thanks for reading and see you at the next post!&lt;/p&gt;
+
+&lt;hr class="major"&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header" id="headingThree"&gt;
+        &lt;h2 class="mb-0"&gt;
+            &lt;button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#code_collapseNone"&gt;&lt;i class="fa fa-plus"&gt;&lt;/i&gt; Show code &lt;i class="icon brands fa-python"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div id="code_collapseNone" class="collapse"&gt;
+        &lt;div class="card-body"&gt;
+            &lt;pre style="resize: both;"&gt;&lt;code&gt;&lt;div class=" highlight hl-ipython3"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; 
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;hr class="major"&gt;
 
