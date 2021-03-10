@@ -37,7 +37,7 @@
 'redirect', (27648, 56)
 'copy_assets:output/assets/css/rst.css', (210432, 497)
 'render_listings:output/listings/index.html', (33792, 1978)
-'sitemap:output/sitemap.xml', (336384, 2680)
+'sitemap:output/sitemap.xml', (336384, 2683)
 'copy_assets:output/assets/webfonts/fa-regular-400.eot', (36864, 415)
 'copy_assets:output/assets/css/fontawesome-all.min.css', (37376, 415)
 'copy_assets:output/assets/sass/libs/_vendor.scss', (37888, 404)
