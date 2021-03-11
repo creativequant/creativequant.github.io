@@ -1247,12 +1247,14 @@ MARKDOWN_EXTENSIONS = ['markdown.extensions.fenced_code', 'markdown.extensions.c
 # before </head>
 # (translatable)
 EXTRA_HEAD_DATA = """
-<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/2fa4a0504a89057cbb596c13a/7c9640e9257027b3aef8721dd.js");</script>
-"""
-# Google Analytics or whatever else you use. Added to the bottom of <body>
-# in the default template (base.tmpl).
-# (translatable)
-BODY_END = """
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-TSP8SQ4');</script>
+<!-- End Google Tag Manager -->
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8SWZG9T7QF"></script>
 <script>
@@ -1262,6 +1264,17 @@ BODY_END = """
 
   gtag('config', 'G-8SWZG9T7QF');
 </script>
+
+<script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/2fa4a0504a89057cbb596c13a/7c9640e9257027b3aef8721dd.js");</script>
+"""
+# Google Analytics or whatever else you use. Added to the bottom of <body>
+# in the default template (base.tmpl).
+# (translatable)
+BODY_END = """
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TSP8SQ4"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 """
 
 # The possibility to extract metadata from the filename by using a
